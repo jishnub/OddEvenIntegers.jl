@@ -30,4 +30,12 @@ julia> @code_typed isinteger(x)
 CodeInfo(
 1 ─     return false
 ) => Bool
+
+julia> x + 1
+5/2
+
+julia> @code_typed isinteger(x + 1)
+CodeInfo(
+1 ─     return false
+) => Bool
 ```

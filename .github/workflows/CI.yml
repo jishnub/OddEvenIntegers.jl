@@ -3,10 +3,18 @@ on:
   pull_request:
     branches:
       - main
+    paths-ignore:
+      - 'LICENSE.md'
+      - 'README.md'
+      - '.github/workflows/TagBot.yml'
   push:
     branches:
       - main
     tags: '*'
+    paths-ignore:
+      - 'LICENSE.md'
+      - 'README.md'
+      - '.github/workflows/TagBot.yml'
 
 concurrency:
   group: build-${{ github.event.pull_request.number || github.ref }}
