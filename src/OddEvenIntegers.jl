@@ -20,7 +20,7 @@ Represent an odd integer.
 struct Odd{T<:Integer} <: AbstractOddEvenInteger
 	x :: T
 
-	Odd{T}(x::T) where {T} = (@assert isodd(x); new(x))
+	Odd{T}(x::T) where {T<:Integer} = (@assert isodd(x); new(x))
 end
 
 Odd(x::Integer) = Odd{typeof(x)}(x)
@@ -34,7 +34,7 @@ Represent an even integer.
 struct Even{T<:Integer} <: AbstractOddEvenInteger
 	x :: T
 
-	Even{T}(x::T) where {T} = (@assert iseven(x); new(x))
+	Even{T}(x::T) where {T<:Integer} = (@assert iseven(x); new(x))
 end
 Even(x::Integer) = Even{typeof(x)}(x)
 Even(x::Even) = x
