@@ -44,6 +44,8 @@ end
         @test x + 2.0 == 5.0
         @test x + big(typemax(Int)) == big(3) + big(typemax(Int))
         @test twice(x) == 6
+
+        @test Odd(big(typemax(Int))) + 1 == big(typemax(Int)) + 1
     end
     @testset "Even" begin
         @test_throws Exception Even(1)
@@ -76,6 +78,8 @@ end
         @test x + 2.0 == 6.0
         @test x + big(typemax(Int)) == big(4) + big(typemax(Int))
         @test twice(x) == 8
+
+        @test Even(big(typemin(Int))) - 1 == big(typemin(Int)) - 1
     end
     @testset "Odd and Even" begin
         @test Odd(1) + Even(2) == Even(2) + Odd(1) == 3

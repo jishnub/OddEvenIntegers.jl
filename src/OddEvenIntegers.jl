@@ -112,8 +112,8 @@ Base.show(io::IO, @nospecialize(x::AbstractOddEvenInteger)) = print(io, x.x)
 
 HalfIntegers.twice(x::AbstractOddEvenInteger) = Even(twice(x.x))
 
-const HalfOddInteger = HalfIntegers.Half{<:Odd{<:Integer}}
-const HalfEvenInteger = HalfIntegers.Half{<:Even{<:Integer}}
+const HalfOddInteger = HalfIntegers.Half{<:Odd}
+const HalfEvenInteger = HalfIntegers.Half{<:Even}
 
 for f in (:+, :-)
 	@eval begin
