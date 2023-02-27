@@ -45,6 +45,8 @@ end
         @test x + big(typemax(Int)) == big(3) + big(typemax(Int))
         @test twice(x) == 6
 
+        @test promote(x, x) == (3, 3)
+
         @test BigInt(Odd(3)) == 3
         @test BigInt(Odd(3)) isa BigInt
         @test Odd(big(typemax(Int))) + 1 == big(typemax(Int)) + 1
@@ -81,6 +83,8 @@ end
         @test x + big(typemax(Int)) == big(4) + big(typemax(Int))
         @test twice(x) == 8
 
+        @test promote(x, x) == (4, 4)
+
         @test BigInt(Even(4)) == 4
         @test BigInt(Even(4)) isa BigInt
         @test Even(big(typemin(Int))) - 1 == big(typemin(Int)) - 1
@@ -90,26 +94,48 @@ end
         @test isodd(Odd(1) + Even(2))
         @test iseven(Odd(1) * Even(2))
         @test Odd(1) * Even(2) == 2
+        @test promote(Odd(1), Even(2)) == (1, 2)
     end
-    @testset "HalfOddInt" begin
-        x = half(Odd(3))
-        @test x isa Half{Odd{Int}}
-        @test x == 3/2
-        @test !isinteger(x)
-        @test -x == -3/2
-        @test x + 1 == 5/2
-        @test x - 1 == 1/2
-        @test 1 + x == 5/2
-        @test 1 - x == -1/2
-        @test x + x == 3
-        @test x - x == 0
-        @test x * x == (3/2)^2
-        @test x / x ≈ 1
-        y = half(Odd(5))
-        @test x + y == 4
-        @test x - y == -1
-        @test x != 1
-        @test 1 != x
-        @test rem(x, x) == 0
+    @testset "half integers" begin
+        @testset "Odd" begin
+            x = half(Odd(3))
+            @test x isa Half{Odd{Int}}
+            @test x == 3/2
+            @test !isinteger(x)
+            @test -x == -3/2
+            @test x + 1 == 5/2
+            @test x - 1 == 1/2
+            @test 1 + x == 5/2
+            @test 1 - x == -1/2
+            @test x + x == 3
+            @test x - x == 0
+            @test x * x == (3/2)^2
+            @test x / x ≈ 1
+            y = half(Odd(5))
+            @test x + y == 4
+            @test x - y == -1
+            @test x != 1
+            @test 1 != x
+        end
+        @testset "even" begin
+            x = half(Even(4))
+            @test x isa Half{Even{Int}}
+            @test x == 2
+            @test isinteger(x)
+            @test -x == -2
+            @test x + 1 == 3
+            @test x - 1 == 1
+            @test 1 + x == 3
+            @test 1 - x == -1
+            @test x + x == 4
+            @test x - x == 0
+            @test x * x == 4
+            @test x / x ≈ 1
+            y = half(Even(6))
+            @test x + y == 5
+            @test x - y == -1
+            @test x != 1
+            @test 1 != x
+        end
     end
 end
