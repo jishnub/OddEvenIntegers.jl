@@ -1,5 +1,7 @@
 # OddEvenIntegers
 
+[![CI](https://github.com/jishnub/OddEvenIntegers.jl/actions/workflows/CI.yml/badge.svg)](https://github.com/jishnub/OddEvenIntegers.jl/actions/workflows/CI.yml)
+
 This package provides the types `Odd` and `Even` that may wrap an integer. Using these types, the result of `isodd` and `iseven` may be evaluated at compile time.
 ```julia
 julia> Odd(3)
