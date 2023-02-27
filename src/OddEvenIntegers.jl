@@ -5,10 +5,18 @@ using HalfIntegers
 export Odd, Even
 
 """
-	OddInteger  <: Integer
+	AbstractOddEvenInteger  <: Integer
 
-Abstract superptye of odd integer types.
-Currently, only `Odd <: OddInteger` is implemented.
+Abstract superptye of odd and even integer types.
+
+# Examples
+```jldoctest
+julia> Odd <: OddEvenIntegers.AbstractOddEvenInteger
+true
+
+julia> Even <: OddEvenIntegers.AbstractOddEvenInteger
+true
+```
 """
 abstract type AbstractOddEvenInteger <: Integer end
 
@@ -16,6 +24,15 @@ abstract type AbstractOddEvenInteger <: Integer end
 	Odd{T<:Integer} <: AbstractOddEvenInteger
 
 Represent an odd integer.
+
+# Examples
+```jldoctest
+julia> Odd(3)
+3
+
+julia> isodd(Odd(3))
+true
+```
 """
 struct Odd{T<:Integer} <: AbstractOddEvenInteger
 	x :: T
@@ -30,6 +47,15 @@ Odd(x::Odd) = x
 	Even{T<:Integer} <: AbstractOddEvenInteger
 
 Represent an even integer.
+
+# Examples
+```jldoctest
+julia> Even(4)
+4
+
+julia> iseven(Even(4))
+true
+```
 """
 struct Even{T<:Integer} <: AbstractOddEvenInteger
 	x :: T

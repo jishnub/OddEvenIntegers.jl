@@ -7,6 +7,12 @@ using Aqua
     Aqua.test_all(OddEvenIntegers)
 end
 
+using Documenter
+DocMeta.setdocmeta!(OddEvenIntegers, :DocTestSetup, :(using OddEvenIntegers); recursive=true)
+@testset "doctests" begin
+    doctest(OddEvenIntegers, manual=false)
+end
+
 @testset "OddEvenIntegers.jl" begin
     @testset "Odd" begin
         @test_throws Exception Odd(2)
