@@ -45,6 +45,8 @@ end
         @test x + big(typemax(Int)) == big(3) + big(typemax(Int))
         @test twice(x) == 6
 
+        @test BigInt(Odd(3)) == 3
+        @test BigInt(Odd(3)) isa BigInt
         @test Odd(big(typemax(Int))) + 1 == big(typemax(Int)) + 1
     end
     @testset "Even" begin
@@ -79,6 +81,8 @@ end
         @test x + big(typemax(Int)) == big(4) + big(typemax(Int))
         @test twice(x) == 8
 
+        @test BigInt(Even(4)) == 4
+        @test BigInt(Even(4)) isa BigInt
         @test Even(big(typemin(Int))) - 1 == big(typemin(Int)) - 1
     end
     @testset "Odd and Even" begin
