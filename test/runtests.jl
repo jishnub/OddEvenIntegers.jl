@@ -45,7 +45,7 @@ end
         @test x + big(typemax(Int)) == big(3) + big(typemax(Int))
         @test twice(x) == 6
 
-        @test promote(x, x) == (3, 3)
+        @test promote(x, x) == promote(x, Int(x)) == (3, 3)
 
         @test BigInt(Odd(3)) == 3
         @test BigInt(Odd(3)) isa BigInt
@@ -83,7 +83,7 @@ end
         @test x + big(typemax(Int)) == big(4) + big(typemax(Int))
         @test twice(x) == 8
 
-        @test promote(x, x) == (4, 4)
+        @test promote(x, x) == promote(x, Int(x)) == (4, 4)
 
         @test BigInt(Even(4)) == 4
         @test BigInt(Even(4)) isa BigInt
