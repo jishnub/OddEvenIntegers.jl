@@ -38,6 +38,7 @@ end
         @test abs(-x) == abs(x) == 3
         @test Base.checked_abs(-x) == 3
         @test zero(x) == 0
+        @test one(x) == 1
         @test trailing_zeros(x) == 0
         @test rem(x, x) == 0
         @test div(x, x) == 1
@@ -50,6 +51,13 @@ end
         @test BigInt(Odd(3)) == 3
         @test BigInt(Odd(3)) isa BigInt
         @test Odd(big(typemax(Int))) + 1 == big(typemax(Int)) + 1
+
+        @test range(Odd(1), length=2) == 1:2
+        @test range(1, length=Odd(3)) == 1:3
+        @test range(Odd(1), length=Odd(3)) == 1:3
+        @test Odd(1):4 == 1:4
+        @test Odd(1):2:Odd(5) == 1:2:5
+        @test 1:2:Odd(5) == 1:2:5
     end
     @testset "Even" begin
         @test_throws Exception Even(1)
@@ -76,6 +84,8 @@ end
         @test abs(-x) == abs(x) == 4
         @test Base.checked_abs(-x) == 4
         @test zero(x) == Even(0) == 0
+        @test one(x) == 1
+        @test oneunit(x) == 1
         @test trailing_zeros(x) == 2
         @test rem(x, x) == 0
         @test div(x, x) == 1
@@ -88,6 +98,13 @@ end
         @test BigInt(Even(4)) == 4
         @test BigInt(Even(4)) isa BigInt
         @test Even(big(typemin(Int))) - 1 == big(typemin(Int)) - 1
+
+        @test range(Even(2), length=2) == 2:3
+        @test range(2, length=Even(2)) == 2:3
+        @test range(Even(2), length=Even(2)) == 2:3
+        @test Even(2):10 == 2:10
+        @test Even(2):Even(2):10 == 2:2:10
+        @test 2:Even(2):10 == 2:2:10
     end
     @testset "Odd and Even" begin
         @test Odd(1) + Even(2) == Even(2) + Odd(1) == 3
@@ -95,6 +112,7 @@ end
         @test iseven(Odd(1) * Even(2))
         @test Odd(1) * Even(2) == 2
         @test promote(Odd(1), Even(2)) == (1, 2)
+        @test Odd(1):Even(2):Odd(5) == 1:2:5
     end
     @testset "half integers" begin
         @testset "Odd" begin

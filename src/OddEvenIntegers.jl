@@ -85,10 +85,6 @@ for f in (:(>>), :(<<))
 	@eval Base.$f(x::AbstractOddEvenInteger, y::UInt) = $f(x.x, y)
 end
 
-for f in (:+, :-)
-	@eval Base.$f(x::T, y::T) where {T<:Union{Odd, Even}} = Even($f(x.x, y.x))
-	@eval Base.$f(x::AbstractOddEvenInteger, y::AbstractOddEvenInteger) = Odd($f(x.x, y.x))
-end
 for f in (:*,)
 	@eval Base.$f(x::Odd, y::Odd) = Odd($f(x.x, y.x))
 	@eval Base.$f(x::AbstractOddEvenInteger, y::AbstractOddEvenInteger) = Even($f(x.x, y.x))
@@ -105,6 +101,10 @@ Base.isodd(x::Even) = false
 
 Base.zero(x::Odd) = zero(x.x)
 Base.iszero(x::Odd) = false
+
+Base.one(x::Even) = one(x.x)
+# this definition arises from practicality
+Base.oneunit(x::Even) = one(x.x)
 
 Base.show(io::IO, @nospecialize(x::AbstractOddEvenInteger)) = print(io, x.x)
 
