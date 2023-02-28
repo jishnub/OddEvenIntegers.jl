@@ -110,8 +110,6 @@ Base.show(io::IO, @nospecialize(x::AbstractOddEvenInteger)) = print(io, x.x)
 
 # HalfIntegers interface
 
-HalfIntegers.twice(x::AbstractOddEvenInteger) = Even(twice(x.x))
-
 const HalfOddInteger = HalfIntegers.Half{<:Odd}
 const HalfEvenInteger = HalfIntegers.Half{<:Even}
 
