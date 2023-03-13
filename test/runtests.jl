@@ -173,17 +173,17 @@ end
             @test isone(y)
             if VERSION >= v"1.7"
                 @test isodd(y)
+                @test !iseven(y)
             end
-            @test !iseven(y)
             @test !iszero(y)
 
             y = half(Even(0))
             @test y == 0
             @test 0 == y
             @test iszero(y)
-            @test iseven(y)
             @test !isone(y)
             if VERSION >= v"1.7"
+                @test iseven(y)
                 @test !isodd(y)
             end
         end
