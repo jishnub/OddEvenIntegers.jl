@@ -171,7 +171,9 @@ end
             @test y == 1
             @test 1 == y
             @test isone(y)
-            @test isodd(y)
+            if VERSION >= v"1.7"
+                @test isodd(y)
+            end
             @test !iseven(y)
             @test !iszero(y)
 
@@ -181,7 +183,9 @@ end
             @test iszero(y)
             @test iseven(y)
             @test !isone(y)
-            @test !isodd(y)
+            if VERSION >= v"1.7"
+                @test !isodd(y)
+            end
         end
     end
 end
