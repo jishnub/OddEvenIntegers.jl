@@ -78,7 +78,7 @@ end
 for f in (:<, :(<=), :rem, :div)
 	@eval Base.$f(x::AbstractOddEvenInteger, y::AbstractOddEvenInteger) = $f(x.x, y.x)
 end
-for f in (:trailing_zeros,)
+for f in (:trailing_zeros, :count_ones)
 	@eval Base.$f(x::AbstractOddEvenInteger) = $f(x.x)
 end
 for f in (:(>>), :(<<))
@@ -96,11 +96,13 @@ end
 
 Base.iseven(x::Odd) = false
 Base.isodd(x::Odd) = true
+Base.ispow2(x::Odd) = false
+Base.iszero(x::Odd) = false
+
 Base.iseven(x::Even) = true
 Base.isodd(x::Even) = false
 
 Base.zero(x::Odd) = zero(x.x)
-Base.iszero(x::Odd) = false
 
 Base.one(x::Even) = one(x.x)
 # this definition arises from practicality
@@ -110,8 +112,10 @@ Base.show(io::IO, @nospecialize(x::AbstractOddEvenInteger)) = print(io, x.x)
 
 # HalfIntegers interface
 
-const HalfOddInteger = HalfIntegers.Half{<:Odd}
-const HalfEvenInteger = HalfIntegers.Half{<:Even}
+HalfIntegers.twice(::Type{Even{T}}, x::Integer) where {T} = Even(twice(T, x))::Even{T}
+
+const HalfOddInteger = Half{<:Odd}
+const HalfEvenInteger = Half{<:Even}
 
 for f in (:+, :-)
 	@eval begin
@@ -124,5 +128,8 @@ end
 
 Base.:(==)(x::HalfOddInteger, y::Integer) = false
 Base.:(==)(y::Integer, x::HalfOddInteger) = false
+
+Base.iszero(::HalfOddInteger) = false
+Base.isone(::HalfOddInteger) = false
 
 end

@@ -22,6 +22,7 @@ end
         @test isodd(x)
         @test !iseven(x)
         @test !iszero(x)
+        @test !ispow2(x)
         @test -x == -3
         @test Odd(x) == x
         @test x == x == Int(x)
@@ -69,6 +70,7 @@ end
         @test !isodd(x)
         @test iseven(x)
         @test !iszero(x)
+        @test ispow2(x)
         @test -x == -4
         @test Even(x) == x
         @test x == x == Int(x)
@@ -126,6 +128,8 @@ end
             @test x isa Half{Odd{Int}}
             @test x == 3/2
             @test !isinteger(x)
+            @test !iszero(x)
+            @test !isone(x)
             @test -x == -3/2
             @test x + 1 == 5/2
             @test x - 1 == 1/2
@@ -146,6 +150,8 @@ end
             @test x isa Half{Even{Int}}
             @test x == 2
             @test isinteger(x)
+            @test !iszero(x)
+            @test !isone(x)
             @test -x == -2
             @test x + 1 == 3
             @test x - 1 == 1
@@ -160,6 +166,26 @@ end
             @test x - y == -1
             @test x != 1
             @test 1 != x
+
+            y = half(Even(2))
+            @test y == 1
+            @test 1 == y
+            @test isone(y)
+            if VERSION >= v"1.7"
+                @test isodd(y)
+                @test !iseven(y)
+            end
+            @test !iszero(y)
+
+            y = half(Even(0))
+            @test y == 0
+            @test 0 == y
+            @test iszero(y)
+            @test !isone(y)
+            if VERSION >= v"1.7"
+                @test iseven(y)
+                @test !isodd(y)
+            end
         end
     end
 end
