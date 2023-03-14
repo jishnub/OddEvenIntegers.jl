@@ -94,6 +94,11 @@ for f in (:-, :checked_abs)
 	@eval Base.$f(x::Even) = Even(Base.$f(x.x))
 end
 
+for f in (:(==), :(≈))
+	@eval Base.$f(::Odd, ::Even) = false
+	@eval Base.$f(::Even, ::Odd) = false
+end
+
 Base.iseven(x::Odd) = false
 Base.isodd(x::Odd) = true
 Base.ispow2(x::Odd) = false
@@ -106,7 +111,7 @@ Base.zero(x::Odd) = zero(x.x)
 
 Base.one(x::Even) = one(x.x)
 # this definition arises from practicality
-Base.oneunit(x::Even) = one(x.x)
+Base.oneunit(x::Even) = oneunit(x.x)
 
 Base.show(io::IO, @nospecialize(x::AbstractOddEvenInteger)) = print(io, x.x)
 
@@ -114,6 +119,7 @@ Base.show(io::IO, @nospecialize(x::AbstractOddEvenInteger)) = print(io, x.x)
 
 HalfIntegers.twice(::Type{Even{T}}, x::Integer) where {T} = Even(twice(T, x))::Even{T}
 
+const HalfOddEvenInteger = Half{<:AbstractOddEvenInteger}
 const HalfOddInteger = Half{<:Odd}
 const HalfEvenInteger = Half{<:Even}
 
@@ -126,8 +132,12 @@ for f in (:+, :-)
 	end
 end
 
-Base.:(==)(x::HalfOddInteger, y::Integer) = false
-Base.:(==)(y::Integer, x::HalfOddInteger) = false
+for f in (:(==), :(≈))
+	@eval Base.$f(x::HalfOddInteger, y::Integer) = false
+	@eval Base.$f(y::Integer, x::HalfOddInteger) = false
+end
+
+Base.isapprox(x::HalfOddEvenInteger, y::HalfOddEvenInteger) = isapprox(twice(x), twice(y))
 
 Base.iszero(::HalfOddInteger) = false
 Base.isone(::HalfOddInteger) = false
