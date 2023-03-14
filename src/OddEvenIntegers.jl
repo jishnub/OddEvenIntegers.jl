@@ -125,8 +125,8 @@ const HalfEvenInteger = Half{<:Even}
 
 for f in (:+, :-)
 	@eval begin
-		Base.$f(x::HalfOddInteger, y::Integer) = half(Odd($f(twice(x), twice(y))))
-		Base.$f(x::Integer, y::HalfOddInteger) = half(Odd($f(twice(x), twice(y))))
+		Base.$f(x::HalfOddInteger, y::Union{Integer, HalfEvenInteger}) = half(Odd($f(twice(x), twice(y))))
+		Base.$f(x::Union{Integer, HalfEvenInteger}, y::HalfOddInteger) = half(Odd($f(twice(x), twice(y))))
 		Base.$f(x::HalfEvenInteger, y::Integer) = half(Even($f(twice(x), twice(y))))
 		Base.$f(x::Integer, y::HalfEvenInteger) = half(Even($f(twice(x), twice(y))))
 	end

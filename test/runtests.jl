@@ -226,6 +226,11 @@ end
             @test !isinteger(half(Odd(1)) - half(Even(2)))
             @test !isinteger(half(Even(2)) + half(Odd(1)))
             @test !isinteger(half(Even(2)) - half(Odd(1)))
+
+            @test !isinteger(half(Odd(1)) + half(Even(2)))
+            @test !isinteger(half(Even(2)) + half(Odd(1)))
+            @test !isinteger(half(Odd(1)) - half(Even(2)))
+            @test !isinteger(half(Even(2)) - half(Odd(1)))
         end
     end
 end
