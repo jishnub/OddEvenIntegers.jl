@@ -154,6 +154,8 @@ end
             @test 1 - x == -1/2
             @test x + x == 3
             @test x - x == 0
+            @test isinteger(x + half(Odd(1)))
+            @test isinteger(x - half(Odd(1)))
             @test x * x == (3/2)^2
             @test x / x ≈ 1
             y = half(Odd(5))
@@ -181,6 +183,8 @@ end
             @test 1 - x == -1
             @test x + x == 4
             @test x - x == 0
+            @test isinteger(x + half(Even(2)))
+            @test isinteger(x - half(Even(2)))
             @test x * x == 4
             @test x / x ≈ 1
             y = half(Even(6))
@@ -214,6 +218,10 @@ end
             @test half(Even(2)) != half(Odd(1))
             @test !(half(Odd(1)) ≈ half(Even(2)))
             @test !(half(Even(2)) ≈ half(Odd(1)))
+            @test !isinteger(half(Odd(1)) + half(Even(2)))
+            @test !isinteger(half(Odd(1)) - half(Even(2)))
+            @test !isinteger(half(Even(2)) + half(Odd(1)))
+            @test !isinteger(half(Even(2)) - half(Odd(1)))
         end
     end
 end
