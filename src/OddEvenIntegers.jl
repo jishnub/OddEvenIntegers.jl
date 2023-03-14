@@ -129,11 +129,24 @@ for f in (:+, :-)
 		Base.$f(x::Integer, y::HalfOddInteger) = half(Odd($f(twice(x), twice(y))))
 		Base.$f(x::HalfEvenInteger, y::Integer) = half(Even($f(twice(x), twice(y))))
 		Base.$f(x::Integer, y::HalfEvenInteger) = half(Even($f(twice(x), twice(y))))
-		function Base.$f(x::T, y::T) where {T<:Union{HalfOddInteger,HalfEvenInteger}}
-			z = $f(twice(x), twice(y))
-			z ÷ 2 # this is known to be an integer
-		end
 	end
+end
+
+function addsubhalf(f, xx, yy)
+	f(xx >> 1, yy >> 1)
+end
+function Base.:(+)(x::HalfOddInteger, y::HalfOddInteger)
+	z = addsubhalf(+, twice(x), twice(y))
+	z + oneunit(z)
+end
+function Base.:(+)(x::HalfEvenInteger, y::HalfEvenInteger)
+	addsubhalf(+, twice(x), twice(y))
+end
+function Base.:(-)(x::HalfOddInteger, y::HalfOddInteger)
+	addsubhalf(-, twice(x), twice(y))
+end
+function Base.:(-)(x::HalfEvenInteger, y::HalfEvenInteger)
+	addsubhalf(-, twice(x), twice(y))
 end
 
 for f in (:(==), :(≈))

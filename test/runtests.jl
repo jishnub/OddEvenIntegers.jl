@@ -163,6 +163,8 @@ end
             @test x - y == -1
             @test x != 1
             @test 1 != x
+
+            @test half(Odd(typemax(Int))) + half(Odd(typemax(Int))) == typemax(Int)
         end
         @testset "Even" begin
             x = half(Even(4))
@@ -212,6 +214,8 @@ end
                 @test iseven(y)
                 @test !isodd(y)
             end
+
+            @test half(Even(typemin(Int))) - half(Even(2)) == (typemin(Int) >> 1) - 1
         end
         @testset "Odd and Even" begin
             @test half(Odd(1)) != half(Even(2))
