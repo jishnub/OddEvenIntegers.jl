@@ -125,11 +125,28 @@ const HalfEvenInteger = Half{<:Even}
 
 for f in (:+, :-)
 	@eval begin
-		Base.$f(x::HalfOddInteger, y::Integer) = half(Odd($f(twice(x), twice(y))))
-		Base.$f(x::Integer, y::HalfOddInteger) = half(Odd($f(twice(x), twice(y))))
+		Base.$f(x::HalfOddInteger, y::Union{Integer, HalfEvenInteger}) = half(Odd($f(twice(x), twice(y))))
+		Base.$f(x::Union{Integer, HalfEvenInteger}, y::HalfOddInteger) = half(Odd($f(twice(x), twice(y))))
 		Base.$f(x::HalfEvenInteger, y::Integer) = half(Even($f(twice(x), twice(y))))
 		Base.$f(x::Integer, y::HalfEvenInteger) = half(Even($f(twice(x), twice(y))))
 	end
+end
+
+function addsubhalf(f, xx, yy)
+	f(xx >> 1, yy >> 1)
+end
+function Base.:(+)(x::HalfOddInteger, y::HalfOddInteger)
+	z = addsubhalf(+, twice(x), twice(y))
+	z + oneunit(z)
+end
+function Base.:(+)(x::HalfEvenInteger, y::HalfEvenInteger)
+	addsubhalf(+, twice(x), twice(y))
+end
+function Base.:(-)(x::HalfOddInteger, y::HalfOddInteger)
+	addsubhalf(-, twice(x), twice(y))
+end
+function Base.:(-)(x::HalfEvenInteger, y::HalfEvenInteger)
+	addsubhalf(-, twice(x), twice(y))
 end
 
 for f in (:(==), :(≈))

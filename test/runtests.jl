@@ -154,6 +154,8 @@ end
             @test 1 - x == -1/2
             @test x + x == 3
             @test x - x == 0
+            @test isinteger(x + half(Odd(1)))
+            @test isinteger(x - half(Odd(1)))
             @test x * x == (3/2)^2
             @test x / x ≈ 1
             y = half(Odd(5))
@@ -161,6 +163,8 @@ end
             @test x - y == -1
             @test x != 1
             @test 1 != x
+
+            @test half(Odd(typemax(Int))) + half(Odd(typemax(Int))) == typemax(Int)
         end
         @testset "Even" begin
             x = half(Even(4))
@@ -181,6 +185,8 @@ end
             @test 1 - x == -1
             @test x + x == 4
             @test x - x == 0
+            @test isinteger(x + half(Even(2)))
+            @test isinteger(x - half(Even(2)))
             @test x * x == 4
             @test x / x ≈ 1
             y = half(Even(6))
@@ -208,12 +214,23 @@ end
                 @test iseven(y)
                 @test !isodd(y)
             end
+
+            @test half(Even(typemin(Int))) - half(Even(2)) == (typemin(Int) >> 1) - 1
         end
         @testset "Odd and Even" begin
             @test half(Odd(1)) != half(Even(2))
             @test half(Even(2)) != half(Odd(1))
             @test !(half(Odd(1)) ≈ half(Even(2)))
             @test !(half(Even(2)) ≈ half(Odd(1)))
+            @test !isinteger(half(Odd(1)) + half(Even(2)))
+            @test !isinteger(half(Odd(1)) - half(Even(2)))
+            @test !isinteger(half(Even(2)) + half(Odd(1)))
+            @test !isinteger(half(Even(2)) - half(Odd(1)))
+
+            @test !isinteger(half(Odd(1)) + half(Even(2)))
+            @test !isinteger(half(Even(2)) + half(Odd(1)))
+            @test !isinteger(half(Odd(1)) - half(Even(2)))
+            @test !isinteger(half(Even(2)) - half(Odd(1)))
         end
     end
 end
