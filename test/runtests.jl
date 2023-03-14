@@ -18,7 +18,10 @@ end
         @test_throws Exception Odd(2)
         x = Odd(3)
         @test x isa Odd{Int}
+        @test x == x
+        @test x ≈ x
         @test x == 3
+        @test x ≈ 3
         @test isodd(x)
         @test !iseven(x)
         @test !iszero(x)
@@ -66,7 +69,10 @@ end
         @test_throws Exception Even(1)
         x = Even(4)
         @test x isa Even{Int}
+        @test x == x
+        @test x ≈ x
         @test x == 4
+        @test x ≈ 4
         @test !isodd(x)
         @test iseven(x)
         @test !iszero(x)
@@ -121,12 +127,23 @@ end
         if VERSION >= v"1.8"
             @test Odd(1):Even(2):Odd(5) == 1:2:5
         end
+        @test Odd(1) != Even(2)
+        @test Even(2) != Odd(1)
+        @test !(Odd(1) ≈ Even(2))
+        @test !(Even(2) ≈ Odd(1))
     end
     @testset "half integers" begin
         @testset "Odd" begin
             x = half(Odd(3))
             @test x isa Half{Odd{Int}}
+            @test x == x
+            @test x ≈ x
             @test x == 3/2
+            @test 3/2 == x
+            @test x ≈ 3/2
+            @test 3/2 ≈ x
+            @test !(x ≈ 2)
+            @test !(2 ≈ x)
             @test !isinteger(x)
             @test !iszero(x)
             @test !isone(x)
@@ -145,10 +162,15 @@ end
             @test x != 1
             @test 1 != x
         end
-        @testset "even" begin
+        @testset "Even" begin
             x = half(Even(4))
             @test x isa Half{Even{Int}}
+            @test x == x
+            @test x ≈ x
             @test x == 2
+            @test 2 == x
+            @test x ≈ 2
+            @test 2 ≈ x
             @test isinteger(x)
             @test !iszero(x)
             @test !isone(x)
@@ -186,6 +208,12 @@ end
                 @test iseven(y)
                 @test !isodd(y)
             end
+        end
+        @testset "Odd and Even" begin
+            @test half(Odd(1)) != half(Even(2))
+            @test half(Even(2)) != half(Odd(1))
+            @test !(half(Odd(1)) ≈ half(Even(2)))
+            @test !(half(Even(2)) ≈ half(Odd(1)))
         end
     end
 end
