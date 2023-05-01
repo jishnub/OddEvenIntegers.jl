@@ -15,7 +15,7 @@ end
 
 @testset "OddEvenIntegers.jl" begin
     @testset "Odd" begin
-        @test_throws Exception Odd(2)
+        @test_throws DomainError Odd(2)
         x = Odd(3)
         @test x isa Odd{Int}
         @test x == x
@@ -70,7 +70,7 @@ end
         @test iszero(zero(typeof(z)))
     end
     @testset "Even" begin
-        @test_throws Exception Even(1)
+        @test_throws DomainError Even(1)
         x = Even(4)
         @test x isa Even{Int}
         @test x == x

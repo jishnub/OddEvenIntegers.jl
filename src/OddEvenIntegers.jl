@@ -37,7 +37,10 @@ true
 struct Odd{T<:Integer} <: AbstractOddEvenInteger
 	x :: T
 
-	Odd{T}(x::T) where {T<:Integer} = (@assert isodd(x); new(x))
+	function Odd{T}(x::T) where {T<:Integer}
+		isodd(x) || throw(DomainError(x, "arguments to Odd must be odd"))
+		new(x)
+	end
 end
 
 Odd(x::Integer) = Odd{typeof(x)}(x)
@@ -60,7 +63,10 @@ true
 struct Even{T<:Integer} <: AbstractOddEvenInteger
 	x :: T
 
-	Even{T}(x::T) where {T<:Integer} = (@assert iseven(x); new(x))
+	function Even{T}(x::T) where {T<:Integer}
+		iseven(x) || throw(DomainError(x, "arguments to Even must be even"))
+		new(x)
+	end
 end
 Even(x::Integer) = Even{typeof(x)}(x)
 Even(x::Even) = x
