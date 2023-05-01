@@ -108,9 +108,11 @@ Base.iseven(x::Even) = true
 Base.isodd(x::Even) = false
 
 Base.zero(x::Odd) = zero(x.x)
+Base.zero(::Type{Odd{T}}) where {T<:Integer} = zero(Half{T})
 
 Base.one(x::Even) = one(x.x)
-# this definition arises from practicality
+Base.one(::Type{Even{T}}) where {T} = one(T)
+# hack around the fact that we can't have an even 1
 Base.oneunit(x::Even) = oneunit(x.x)
 
 Base.show(io::IO, @nospecialize(x::AbstractOddEvenInteger)) = print(io, x.x)
@@ -158,9 +160,7 @@ Base.isapprox(x::HalfOddEvenInteger, y::HalfOddEvenInteger) = isapprox(twice(x),
 
 # hack around the fact that we can't have an odd zero
 Base.zero(h::Half{Odd{T}}) where {T<:Integer} = zero(Half{T})
-
-# hack around the fact that we can't have an even one
-Base.one(h::Half{Even{T}}) where {T<:Integer} = one(Half{T})
+Base.zero(::Type{Half{Odd{T}}}) where {T<:Integer} = zero(Half{T})
 
 Base.iszero(::HalfOddInteger) = false
 Base.isone(::HalfOddInteger) = false
