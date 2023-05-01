@@ -37,7 +37,10 @@ true
 struct Odd{T<:Integer} <: AbstractOddEvenInteger
 	x :: T
 
-	Odd{T}(x::T) where {T<:Integer} = (@assert isodd(x); new(x))
+	function Odd{T}(x::T) where {T<:Integer}
+		isodd(x) || throw(DomainError(x, "arguments to Odd must be odd"))
+		new(x)
+	end
 end
 
 Odd(x::Integer) = Odd{typeof(x)}(x)
@@ -60,7 +63,10 @@ true
 struct Even{T<:Integer} <: AbstractOddEvenInteger
 	x :: T
 
-	Even{T}(x::T) where {T<:Integer} = (@assert iseven(x); new(x))
+	function Even{T}(x::T) where {T<:Integer}
+		iseven(x) || throw(DomainError(x, "arguments to Even must be even"))
+		new(x)
+	end
 end
 Even(x::Integer) = Even{typeof(x)}(x)
 Even(x::Even) = x
@@ -108,9 +114,11 @@ Base.iseven(x::Even) = true
 Base.isodd(x::Even) = false
 
 Base.zero(x::Odd) = zero(x.x)
+Base.zero(::Type{Odd{T}}) where {T<:Integer} = zero(Half{T})
 
 Base.one(x::Even) = one(x.x)
-# this definition arises from practicality
+Base.one(::Type{Even{T}}) where {T} = one(T)
+# hack around the fact that we can't have an even 1
 Base.oneunit(x::Even) = oneunit(x.x)
 
 Base.show(io::IO, @nospecialize(x::AbstractOddEvenInteger)) = print(io, x.x)
@@ -155,6 +163,10 @@ for f in (:(==), :(≈))
 end
 
 Base.isapprox(x::HalfOddEvenInteger, y::HalfOddEvenInteger) = isapprox(twice(x), twice(y))
+
+# hack around the fact that we can't have an odd zero
+Base.zero(h::Half{Odd{T}}) where {T<:Integer} = zero(Half{T})
+Base.zero(::Type{Half{Odd{T}}}) where {T<:Integer} = zero(Half{T})
 
 Base.iszero(::HalfOddInteger) = false
 Base.isone(::HalfOddInteger) = false

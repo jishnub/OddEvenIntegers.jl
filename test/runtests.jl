@@ -15,7 +15,7 @@ end
 
 @testset "OddEvenIntegers.jl" begin
     @testset "Odd" begin
-        @test_throws Exception Odd(2)
+        @test_throws DomainError Odd(2)
         x = Odd(3)
         @test x isa Odd{Int}
         @test x == x
@@ -64,9 +64,13 @@ end
             @test Odd(1):2:Odd(5) == 1:2:5
             @test 1:2:Odd(5) == 1:2:5
         end
+
+        z = Odd(3)
+        @test iszero(zero(z))
+        @test iszero(zero(typeof(z)))
     end
     @testset "Even" begin
-        @test_throws Exception Even(1)
+        @test_throws DomainError Even(1)
         x = Even(4)
         @test x isa Even{Int}
         @test x == x
@@ -117,6 +121,10 @@ end
             @test Even(2):Even(2):10 == 2:2:10
             @test 2:Even(2):10 == 2:2:10
         end
+
+        h = Even(4)
+        @test isone(one(h))
+        @test isone(one(typeof(h)))
     end
     @testset "Odd and Even" begin
         @test Odd(1) + Even(2) == Even(2) + Odd(1) == 3
@@ -165,6 +173,10 @@ end
             @test 1 != x
 
             @test half(Odd(typemax(Int))) + half(Odd(typemax(Int))) == typemax(Int)
+
+            h = half(Odd(3))
+            @test iszero(zero(h))
+            @test iszero(zero(typeof(h)))
         end
         @testset "Even" begin
             x = half(Even(4))
@@ -214,6 +226,10 @@ end
                 @test iseven(y)
                 @test !isodd(y)
             end
+
+            h = half(Even(4))
+            @test isone(one(h))
+            @test isone(one(typeof(h)))
 
             @test half(Even(typemin(Int))) - half(Even(2)) == (typemin(Int) >> 1) - 1
         end
