@@ -156,6 +156,12 @@ end
 
 Base.isapprox(x::HalfOddEvenInteger, y::HalfOddEvenInteger) = isapprox(twice(x), twice(y))
 
+# hack around the fact that we can't have an odd zero
+Base.zero(h::Half{Odd{T}}) where {T<:Integer} = zero(Half{T})
+
+# hack around the fact that we can't have an even one
+Base.one(h::Half{Even{T}}) where {T<:Integer} = one(Half{T})
+
 Base.iszero(::HalfOddInteger) = false
 Base.isone(::HalfOddInteger) = false
 

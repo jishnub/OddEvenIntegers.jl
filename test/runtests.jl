@@ -165,6 +165,9 @@ end
             @test 1 != x
 
             @test half(Odd(typemax(Int))) + half(Odd(typemax(Int))) == typemax(Int)
+
+            z = zero(half(Odd(3)))
+            @test iszero(z)
         end
         @testset "Even" begin
             x = half(Even(4))
