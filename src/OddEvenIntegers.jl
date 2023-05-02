@@ -114,7 +114,7 @@ Base.iseven(x::Even) = true
 Base.isodd(x::Even) = false
 
 Base.zero(x::Odd) = zero(x.x)
-Base.zero(::Type{Odd{T}}) where {T<:Integer} = zero(Half{T})
+Base.zero(::Type{Odd{T}}) where {T<:Integer} = zero(T)
 
 Base.one(x::Even) = one(x.x)
 Base.one(::Type{Even{T}}) where {T} = one(T)

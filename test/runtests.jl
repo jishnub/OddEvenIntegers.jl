@@ -65,9 +65,10 @@ end
             @test 1:2:Odd(5) == 1:2:5
         end
 
-        z = Odd(3)
-        @test iszero(zero(z))
-        @test iszero(zero(typeof(z)))
+        h = Odd(3)
+        @test iszero(zero(h))
+        @test iszero(zero(typeof(h)))
+        @test typeof(zero(h)) == typeof(zero(typeof(h)))
     end
     @testset "Even" begin
         @test_throws DomainError Even(1)
@@ -125,6 +126,7 @@ end
         h = Even(4)
         @test isone(one(h))
         @test isone(one(typeof(h)))
+        @test typeof(zero(h)) == typeof(zero(typeof(h)))
     end
     @testset "Odd and Even" begin
         @test Odd(1) + Even(2) == Even(2) + Odd(1) == 3
@@ -177,6 +179,7 @@ end
             h = half(Odd(3))
             @test iszero(zero(h))
             @test iszero(zero(typeof(h)))
+            @test typeof(zero(h)) == typeof(zero(typeof(h)))
         end
         @testset "Even" begin
             x = half(Even(4))
@@ -230,6 +233,7 @@ end
             h = half(Even(4))
             @test isone(one(h))
             @test isone(one(typeof(h)))
+            @test typeof(zero(h)) == typeof(zero(typeof(h)))
 
             @test half(Even(typemin(Int))) - half(Even(2)) == (typemin(Int) >> 1) - 1
         end
