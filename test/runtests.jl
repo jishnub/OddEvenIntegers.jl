@@ -177,6 +177,12 @@ end
             h = half(Odd(3))
             @test iszero(zero(h))
             @test iszero(zero(typeof(h)))
+
+            @testset "ranges" begin
+                r = half(Odd(1)):half(Odd(5))
+                @test isone(step(r))
+                @test typeof(r[1] + step(r)) == typeof(r[1])
+            end
         end
         @testset "Even" begin
             x = half(Even(4))
@@ -232,6 +238,12 @@ end
             @test isone(one(typeof(h)))
 
             @test half(Even(typemin(Int))) - half(Even(2)) == (typemin(Int) >> 1) - 1
+
+            @testset "ranges" begin
+                r = half(Even(2)):half(Even(6))
+                @test isone(step(r))
+                @test typeof(r[1] + step(r)) == typeof(r[1])
+            end
         end
         @testset "Odd and Even" begin
             @test half(Odd(1)) != half(Even(2))
