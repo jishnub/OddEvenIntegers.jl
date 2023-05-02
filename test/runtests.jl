@@ -185,6 +185,7 @@ end
                 r = half(Odd(1)):half(Odd(5))
                 @test isone(step(r))
                 @test typeof(r[1] + step(r)) == typeof(r[1])
+                @test length(r) == 3
             end
         end
         @testset "Even" begin
@@ -247,6 +248,7 @@ end
                 r = half(Even(2)):half(Even(6))
                 @test isone(step(r))
                 @test typeof(r[1] + step(r)) == typeof(r[1])
+                @test length(r) == 3
             end
         end
         @testset "Odd and Even" begin

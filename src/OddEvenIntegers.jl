@@ -128,8 +128,8 @@ Base.show(io::IO, @nospecialize(x::AbstractOddEvenInteger)) = print(io, x.x)
 HalfIntegers.twice(::Type{Even{T}}, x::Integer) where {T} = Even(twice(T, x))::Even{T}
 
 const HalfOddEvenInteger = Half{<:AbstractOddEvenInteger}
-const HalfOddInteger{T} = Half{Odd{T}}
-const HalfEvenInteger{T} = Half{Even{T}}
+const HalfOddInteger{T<:Integer} = Half{Odd{T}}
+const HalfEvenInteger{T<:Integer} = Half{Even{T}}
 
 for f in (:+, :-)
 	@eval begin
@@ -165,8 +165,8 @@ end
 Base.isapprox(x::HalfOddEvenInteger, y::HalfOddEvenInteger) = isapprox(twice(x), twice(y))
 
 # hack around the fact that we can't have an odd zero
-Base.zero(h::Half{Odd{T}}) where {T<:Integer} = zero(Half{T})
-Base.zero(::Type{Half{Odd{T}}}) where {T<:Integer} = zero(Half{T})
+Base.zero(h::HalfOddInteger{T}) where {T<:Integer} = zero(Half{T})
+Base.zero(::Type{HalfOddInteger{T}}) where {T<:Integer} = zero(Half{T})
 
 Base.iszero(::HalfOddInteger) = false
 Base.isone(::HalfOddInteger) = false
