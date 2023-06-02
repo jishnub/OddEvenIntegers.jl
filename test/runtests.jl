@@ -72,6 +72,11 @@ end
         @test iszero(zero(h))
         @test iszero(zero(typeof(h)))
         @test typeof(zero(h)) == typeof(zero(typeof(h)))
+
+        @testset "promote_type" begin
+            @test promote_type(Odd{Int8}, Odd{Int16}) == promote_type(Int8, Int16)
+            @test promote_type(Odd{Int8}, Int16) == promote_type(Int8, Int16)
+        end
     end
     @testset "Even" begin
         @test_throws DomainError Even(1)
@@ -133,6 +138,11 @@ end
         @test isone(one(h))
         @test isone(one(typeof(h)))
         @test typeof(zero(h)) == typeof(zero(typeof(h)))
+
+        @testset "promote_type" begin
+            @test promote_type(Even{Int8}, Even{Int16}) == promote_type(Int8, Int16)
+            @test promote_type(Even{Int8}, Int16) == promote_type(Int8, Int16)
+        end
     end
     @testset "Odd and Even" begin
         @test Odd(1) + Even(2) == Even(2) + Odd(1) == 3
@@ -147,6 +157,11 @@ end
         @test Even(2) != Odd(1)
         @test !(Odd(1) ≈ Even(2))
         @test !(Even(2) ≈ Odd(1))
+
+        @testset "promote_type" begin
+            @test promote_type(Even{Int8}, Odd{Int16}) == promote_type(Int8, Int16)
+            @test promote_type(Odd{Int8}, Even{Int16}) == promote_type(Int8, Int16)
+        end
     end
     @testset "half integers" begin
         @testset "Odd" begin
