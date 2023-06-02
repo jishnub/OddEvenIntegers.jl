@@ -56,6 +56,9 @@ end
         @test BigInt(Odd(3)) isa BigInt
         @test Odd(big(typemax(Int))) + 1 == big(typemax(Int)) + 1
 
+        @test Odd{BigInt}(x) == x
+        @test Odd{BigInt}(x) isa Odd{BigInt}
+
         if VERSION >= v"1.8"
             @test range(Odd(1), length=2) == 1:2
             @test range(1, length=Odd(3)) == 1:3
@@ -69,6 +72,11 @@ end
         @test iszero(zero(h))
         @test iszero(zero(typeof(h)))
         @test typeof(zero(h)) == typeof(zero(typeof(h)))
+
+        @testset "promote_type" begin
+            @test promote_type(Odd{Int8}, Odd{Int16}) == promote_type(Int8, Int16)
+            @test promote_type(Odd{Int8}, Int16) == promote_type(Int8, Int16)
+        end
     end
     @testset "Even" begin
         @test_throws DomainError Even(1)
@@ -114,6 +122,9 @@ end
         @test BigInt(Even(4)) isa BigInt
         @test Even(big(typemin(Int))) - 1 == big(typemin(Int)) - 1
 
+        @test Even{BigInt}(x) == x
+        @test Even{BigInt}(x) isa Even{BigInt}
+
         if VERSION >= v"1.8"
             @test range(Even(2), length=2) == 2:3
             @test range(2, length=Even(2)) == 2:3
@@ -127,6 +138,11 @@ end
         @test isone(one(h))
         @test isone(one(typeof(h)))
         @test typeof(zero(h)) == typeof(zero(typeof(h)))
+
+        @testset "promote_type" begin
+            @test promote_type(Even{Int8}, Even{Int16}) == promote_type(Int8, Int16)
+            @test promote_type(Even{Int8}, Int16) == promote_type(Int8, Int16)
+        end
     end
     @testset "Odd and Even" begin
         @test Odd(1) + Even(2) == Even(2) + Odd(1) == 3
@@ -141,6 +157,11 @@ end
         @test Even(2) != Odd(1)
         @test !(Odd(1) ≈ Even(2))
         @test !(Even(2) ≈ Odd(1))
+
+        @testset "promote_type" begin
+            @test promote_type(Even{Int8}, Odd{Int16}) == promote_type(Int8, Int16)
+            @test promote_type(Odd{Int8}, Even{Int16}) == promote_type(Int8, Int16)
+        end
     end
     @testset "half integers" begin
         @testset "Odd" begin
@@ -265,6 +286,73 @@ end
             @test !isinteger(half(Even(2)) + half(Odd(1)))
             @test !isinteger(half(Odd(1)) - half(Even(2)))
             @test !isinteger(half(Even(2)) - half(Odd(1)))
+        end
+        @testset "Odd and integer ranges" begin
+            _integer_or_halfinteger(x::Integer) = x
+            _integer_or_halfinteger(x::Half{Odd{T}}) where {T} = convert(Half{T}, x)
+            function test_range(start, stop, T)
+                r = @inferred start:stop
+                s = (:)(map(_integer_or_halfinteger, (start, stop))...)
+                @test r == s
+                @test r isa UnitRange{T}
+                @test first(r) isa T
+            end
+            @testset "UnitRange" begin
+                @testset "Odd{Int}" begin
+                    test_range(half(Odd(1)), half(Odd(19)), Half{Odd{Int}})
+
+                    test_range(half(Odd(1)), 5, Half{Odd{Int}})
+
+                    test_range(2, half(Odd(7)), Int)
+                end
+
+                @testset "Odd{BigInt}" begin
+                    test_range(half(Odd(big(1))), half(Odd(big(19))), Half{Odd{BigInt}})
+
+                    test_range(half(Odd(1)), half(Odd(big(19))), Half{Odd{BigInt}})
+
+                    test_range(half(Odd(big(1))), half(Odd(19)), Half{Odd{BigInt}})
+
+                    test_range(half(Odd(1)), big(5), Half{Odd{BigInt}})
+
+                    test_range(half(Odd(big(1))), 5, Half{Odd{BigInt}})
+
+                    test_range(2, half(Odd(big(7))), BigInt)
+                end
+            end
+
+            function test_range(start, _step, stop, T, S)
+                r = @inferred start:_step:stop
+                s = (:)(map(_integer_or_halfinteger, (start, _step, stop))...)
+                @test r == s
+                @test r isa StepRange{T,S}
+                @test first(r) isa T
+                @test step(r) isa S
+            end
+
+            @testset "StepRange" begin
+                @testset "Odd{Int}" begin
+                    test_range(half(Odd(1)), 1, half(Odd(19)), Half{Odd{Int}}, Int)
+
+                    test_range(half(Odd(1)), 2, 25, Half{Odd{Int}}, Int)
+
+                    test_range(2, 2, half(Odd(17)), Int, Int)
+                end
+
+                @testset "Odd{BigInt}" begin
+                    test_range(half(Odd(big(1))), 1, half(Odd(19)), Half{Odd{BigInt}}, BigInt)
+                    test_range(half(Odd(1)), big(1), half(Odd(19)), Half{Odd{BigInt}}, BigInt)
+                    test_range(half(Odd(1)), 1, half(Odd(big(19))), Half{Odd{BigInt}}, BigInt)
+
+                    test_range(half(Odd(big(1))), 1, 10, Half{Odd{BigInt}}, BigInt)
+                    test_range(half(Odd(1)), big(1), 10, Half{Odd{BigInt}}, BigInt)
+                    test_range(half(Odd(1)), 1, big(10), Half{Odd{BigInt}}, BigInt)
+
+                    test_range(big(2), 1, half(Odd(19)), BigInt, BigInt)
+                    test_range(2, big(1), half(Odd(19)), BigInt, BigInt)
+                    test_range(2, 1, half(Odd(big(19))), BigInt, BigInt)
+                end
+            end
         end
     end
 end

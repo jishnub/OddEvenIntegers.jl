@@ -46,6 +46,8 @@ end
 Odd(x::Integer) = Odd{typeof(x)}(x)
 Odd(x::Odd) = x
 
+Odd{T}(x::Odd) where {T<:Integer} = Odd(T(x.x))
+
 """
 	Even{T<:Integer} <: AbstractOddEvenInteger
 
@@ -70,6 +72,8 @@ struct Even{T<:Integer} <: AbstractOddEvenInteger
 end
 Even(x::Integer) = Even{typeof(x)}(x)
 Even(x::Even) = x
+
+Even{T}(x::Even) where {T<:Integer} = Even(T(x.x))
 
 Base.promote_type(::Type{Odd{A}}, ::Type{Odd{B}}) where {A,B} = promote_type(A,B)
 Base.promote_type(::Type{Even{A}}, ::Type{Even{B}}) where {A,B} = promote_type(A,B)
@@ -131,6 +135,9 @@ const HalfOddEvenInteger = Half{<:AbstractOddEvenInteger}
 const HalfOddInteger{T<:Integer} = Half{Odd{T}}
 const HalfEvenInteger{T<:Integer} = Half{Even{T}}
 
+HalfOddInteger(x::HalfOddInteger) = x
+HalfOddInteger(h::Half{T}) where {T<:Integer} = half(Odd(twice(h)))
+
 for f in (:+, :-)
 	@eval begin
 		Base.$f(x::HalfOddInteger, y::Union{Integer, HalfEvenInteger}) = half(Odd($f(twice(x), twice(y))))
@@ -173,5 +180,39 @@ Base.isone(::HalfOddInteger) = false
 
 # We can't have a HalfOddInt 1, as we can't have an Odd 2. We therefore need to work around this
 Base.step(r::UnitRange{HalfOddInteger{T}}) where {T<:Integer} = oneunit(T)
+
+# Special case UnitRanges/StepRanges with start/stop being a HalfOddInteger, and the other being an integer
+# Eg. half(Odd(1)):5 == half(Odd(1)):half(Odd(9)), and it may have an eltype of Half{Odd{Int}}
+# these methods are needed to avoid promotion to `HalfInt`
+
+function _unitrange_ofeltype(start, stop, ::Type{T}) where {T}
+	startstop_promoted = map(T, promote(start, stop))
+	UnitRange(startstop_promoted...)
+end
+function _range_decreasestop(start, stop, T::Type)
+	stop_shifted = stop - half(1)
+	_unitrange_ofeltype(start, stop_shifted, T)
+end
+Base.:(:)(start::HalfOddInteger, stop::Integer) = _range_decreasestop(start, stop, HalfOddInteger)
+Base.:(:)(start::Integer, stop::HalfOddInteger) = _range_decreasestop(start, stop, Integer)
+function Base.:(:)(start::HalfOddInteger, stop::HalfOddInteger)
+	_unitrange_ofeltype(start, stop, HalfOddInteger)
+end
+
+function _steprange_ofeltype(start, step::Integer, stop, ::Type{T}) where {T}
+	startstopstep_promoted = promote(start, stop, step)
+	startstop_promoted = map(T, startstopstep_promoted[1:2])
+	StepRange(startstop_promoted[1], Integer(startstopstep_promoted[3]), startstop_promoted[2])
+end
+
+function _range_decreasestop(start, step::Integer, stop, T::Type)
+	stop_shifted = stop - half(1)
+	_steprange_ofeltype(start, step, stop_shifted, T)
+end
+Base.:(:)(start::HalfOddInteger, step::Integer, stop::Integer) = _range_decreasestop(start, step, stop, HalfOddInteger)
+Base.:(:)(start::Integer, step::Integer, stop::HalfOddInteger) = _range_decreasestop(start, step, stop, Integer)
+function Base.:(:)(start::HalfOddInteger, step::Integer, stop::HalfOddInteger)
+	_steprange_ofeltype(start, step, stop, HalfOddInteger)
+end
 
 end
