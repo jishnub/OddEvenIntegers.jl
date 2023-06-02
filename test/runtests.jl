@@ -56,6 +56,9 @@ end
         @test BigInt(Odd(3)) isa BigInt
         @test Odd(big(typemax(Int))) + 1 == big(typemax(Int)) + 1
 
+        @test Odd{BigInt}(x) == x
+        @test Odd{BigInt}(x) isa Odd{BigInt}
+
         if VERSION >= v"1.8"
             @test range(Odd(1), length=2) == 1:2
             @test range(1, length=Odd(3)) == 1:3
@@ -113,6 +116,9 @@ end
         @test BigInt(Even(4)) == 4
         @test BigInt(Even(4)) isa BigInt
         @test Even(big(typemin(Int))) - 1 == big(typemin(Int)) - 1
+
+        @test Even{BigInt}(x) == x
+        @test Even{BigInt}(x) isa Even{BigInt}
 
         if VERSION >= v"1.8"
             @test range(Even(2), length=2) == 2:3
