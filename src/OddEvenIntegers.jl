@@ -20,6 +20,8 @@ true
 """
 abstract type AbstractOddEvenInteger <: Integer end
 
+Base.:(==)(a::AbstractOddEvenInteger, b::AbstractOddEvenInteger) = a.x == b.x
+
 """
 	Odd{T<:Integer} <: AbstractOddEvenInteger
 
@@ -200,13 +202,14 @@ function Base.:(:)(start::HalfOddInteger, stop::HalfOddInteger)
 end
 
 function _steprange_ofeltype(start, step::Integer, stop, ::Type{T}) where {T}
+	iszero(step) && throw(ArgumentError("step cannot be zero"))
 	startstopstep_promoted = promote(start, stop, step)
 	startstop_promoted = map(T, startstopstep_promoted[1:2])
 	StepRange(startstop_promoted[1], Integer(startstopstep_promoted[3]), startstop_promoted[2])
 end
 
 function _range_decreasestop(start, step::Integer, stop, T::Type)
-	stop_shifted = stop - half(1)
+	stop_shifted = stop - sign(step) * half(1)
 	_steprange_ofeltype(start, step, stop_shifted, T)
 end
 Base.:(:)(start::HalfOddInteger, step::Integer, stop::Integer) = _range_decreasestop(start, step, stop, HalfOddInteger)
