@@ -194,6 +194,8 @@ end
             @test x - y == -1
             @test x != 1
             @test 1 != x
+            @test OddEvenIntegers.HalfOddInteger(x) === x
+            @test OddEvenIntegers.HalfOddInteger(half(3)) === x
 
             @test half(Odd(typemax(Int))) + half(Odd(typemax(Int))) == typemax(Int)
 
