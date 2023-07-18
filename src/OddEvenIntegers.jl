@@ -180,25 +180,18 @@ Base.zero(::Type{HalfOddInteger{T}}) where {T<:Integer} = zero(Half{T})
 Base.iszero(::HalfOddInteger) = false
 Base.isone(::HalfOddInteger) = false
 
-# We can't have a HalfOddInt 1, as we can't have an Odd 2. We therefore need to work around this
-Base.step(r::UnitRange{HalfOddInteger{T}}) where {T<:Integer} = oneunit(T)
-
-# Special case UnitRanges/StepRanges with start/stop being a HalfOddInteger, and the other being an integer
-# Eg. half(Odd(1)):5 == half(Odd(1)):half(Odd(9)), and it may have an eltype of Half{Odd{Int}}
-# these methods are needed to avoid promotion to `HalfInt`
-
-function _unitrange_ofeltype(start, stop, ::Type{T}) where {T}
-	startstop_promoted = map(T, promote(start, stop))
-	UnitRange(startstop_promoted...)
+function _unitsteprange_ofeltype(start, stop, ::Type{T}) where {T}
+	startT, stopT = convert.(T, promote(start, stop))
+	StepRange(startT, Integer(oneunit(stopT-startT)), stopT)
 end
 function _range_decreasestop(start, stop, T::Type)
 	stop_shifted = stop - half(1)
-	_unitrange_ofeltype(start, stop_shifted, T)
+	_unitsteprange_ofeltype(start, stop_shifted, T)
 end
 Base.:(:)(start::HalfOddInteger, stop::Integer) = _range_decreasestop(start, stop, HalfOddInteger)
 Base.:(:)(start::Integer, stop::HalfOddInteger) = _range_decreasestop(start, stop, Integer)
 function Base.:(:)(start::HalfOddInteger, stop::HalfOddInteger)
-	_unitrange_ofeltype(start, stop, HalfOddInteger)
+	_unitsteprange_ofeltype(start, stop, HalfOddInteger)
 end
 
 function _steprange_ofeltype(start, step::Integer, stop, ::Type{T}) where {T}

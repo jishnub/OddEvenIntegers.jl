@@ -303,8 +303,10 @@ end
                 s = (:)(map(_integer_or_halfinteger, (start, stop))...)
                 @test r == s
                 @test length(r) == length(s) == length(collect(r))
-                @test r isa UnitRange{T}
-                @test first(r) isa T
+                @test r isa AbstractRange{T}
+                @test @inferred(step(r)) == 1
+                @test @inferred(first(r)) isa T
+                @test @inferred(r[1]) isa T
             end
             @testset "UnitRange" begin
                 @testset "Odd{Int}" begin
@@ -330,24 +332,28 @@ end
                 end
             end
 
-            function test_range(start, _step, stop, T, S)
-                r = @inferred start:_step:stop
-                s = (:)(map(_integer_or_halfinteger, (start, _step, stop))...)
+            function test_range(start, stepsize, stop, T, S)
+                r = @inferred start:stepsize:stop
+                s = (:)(map(_integer_or_halfinteger, (start, stepsize, stop))...)
                 @test r == s
                 @test length(r) == length(s) == length(collect(r))
                 @test r isa StepRange{T,S}
-                @test first(r) isa T
-                @test step(r) isa S
+                @test @inferred(first(r)) isa T
+                if length(r) > 0
+                    @test @inferred(r[1]) isa T
+                end
+                @test @inferred(step(r)) isa S
             end
 
             @testset "StepRange" begin
                 @testset "Odd{Int}" begin
-                    for step in [-2:-1; 1:2]
-                        test_range(half(Odd(1)), step, half(Odd(19)), Half{Odd{Int}}, Int)
+                    for stepsize in [-2:-1; 1:2]
+                        test_range(half(Odd(1)), stepsize, half(Odd(19)), Half{Odd{Int}}, Int)
+                        test_range(half(Odd(19)), stepsize, half(Odd(1)), Half{Odd{Int}}, Int)
 
-                        test_range(half(Odd(1)), step, 25, Half{Odd{Int}}, Int)
+                        test_range(half(Odd(1)), stepsize, 25, Half{Odd{Int}}, Int)
 
-                        test_range(2, step, half(Odd(17)), Int, Int)
+                        test_range(2, stepsize, half(Odd(17)), Int, Int)
                     end
                     @test_throws ArgumentError half(Odd(1)):0:2
                     @test_throws ArgumentError 2:0:half(Odd(3))
@@ -355,18 +361,20 @@ end
                 end
 
                 @testset "Odd{BigInt}" begin
-                    for step in [-2:-1; 1:2]
-                        test_range(half(Odd(big(1))), step, half(Odd(19)), Half{Odd{BigInt}}, BigInt)
-                        test_range(half(Odd(1)), big(step), half(Odd(19)), Half{Odd{BigInt}}, BigInt)
-                        test_range(half(Odd(1)), step, half(Odd(big(19))), Half{Odd{BigInt}}, BigInt)
+                    for stepsize in [-2:-1; 1:2]
+                        test_range(half(Odd(big(1))), stepsize, half(Odd(19)), Half{Odd{BigInt}}, BigInt)
+                        test_range(half(Odd(1)), big(stepsize), half(Odd(19)), Half{Odd{BigInt}}, BigInt)
+                        test_range(half(Odd(1)), stepsize, half(Odd(big(19))), Half{Odd{BigInt}}, BigInt)
 
-                        test_range(half(Odd(big(1))), step, 10, Half{Odd{BigInt}}, BigInt)
-                        test_range(half(Odd(1)), big(step), 10, Half{Odd{BigInt}}, BigInt)
-                        test_range(half(Odd(1)), step, big(10), Half{Odd{BigInt}}, BigInt)
+                        test_range(half(Odd(19)), stepsize, half(Odd(big(1))), Half{Odd{BigInt}}, BigInt)
 
-                        test_range(big(2), step, half(Odd(19)), BigInt, BigInt)
-                        test_range(2, big(step), half(Odd(19)), BigInt, BigInt)
-                        test_range(2, step, half(Odd(big(19))), BigInt, BigInt)
+                        test_range(half(Odd(big(1))), stepsize, 10, Half{Odd{BigInt}}, BigInt)
+                        test_range(half(Odd(1)), big(stepsize), 10, Half{Odd{BigInt}}, BigInt)
+                        test_range(half(Odd(1)), stepsize, big(10), Half{Odd{BigInt}}, BigInt)
+
+                        test_range(big(2), stepsize, half(Odd(19)), BigInt, BigInt)
+                        test_range(2, big(stepsize), half(Odd(19)), BigInt, BigInt)
+                        test_range(2, stepsize, half(Odd(big(19))), BigInt, BigInt)
                     end
 
                     @test_throws ArgumentError half(Odd(1)):big(0):2
