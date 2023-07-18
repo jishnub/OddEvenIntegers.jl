@@ -1,7 +1,7 @@
 name = "OddEvenIntegers"
 uuid = "8d37c425-f37a-4ca2-9b9d-a61bc06559d2"
 authors = ["Jishnu Bhattacharya <jishnub.github@gmail.com> and contributors"]
-version = "0.1.8"
+version = "0.1.9"
 
 [deps]
 HalfIntegers = "f0d1745a-41c9-11e9-1dd9-e5d34d218721"

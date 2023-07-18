@@ -306,7 +306,12 @@ end
                 @test r isa AbstractRange{T}
                 @test @inferred(step(r)) == 1
                 @test @inferred(first(r)) isa T
-                @test @inferred(r[1]) isa T
+                if length(r) > 0
+                    @test @inferred(r[1]) isa T
+                end
+                if length(r) > 1
+                    @test @inferred(r[2]) isa T
+                end
             end
             @testset "UnitRange" begin
                 @testset "Odd{Int}" begin
@@ -341,6 +346,9 @@ end
                 @test @inferred(first(r)) isa T
                 if length(r) > 0
                     @test @inferred(r[1]) isa T
+                end
+                if length(r) > 1
+                    @test @inferred(r[2]) isa T
                 end
                 @test @inferred(step(r)) isa S
             end
