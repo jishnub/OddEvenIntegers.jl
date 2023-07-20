@@ -316,12 +316,24 @@ end
                 end
             end
             @testset "UnitRange" begin
+                # this range doesn't conform to the supertype
+                # as typeof(step(r)) != eltype(r)
+                # however, such ranges are occasionally created,
+                # especially on older Julia versions
+                r = UnitRange(half(Odd(3)), half(Odd(7)))
+                @test step(r) === 1
+            end
+            @testset "unit step range" begin
                 @testset "Odd{Int}" begin
                     test_range(half(Odd(1)), half(Odd(19)), Half{Odd{Int}})
 
                     test_range(half(Odd(1)), 5, Half{Odd{Int}})
 
                     test_range(2, half(Odd(7)), Int)
+
+                    @test (1:4) .+ half(Odd(3)) === range(half(Odd(5)), length=4, step=1)
+                    @test half(Odd(3)) .+ (1:4) === range(half(Odd(5)), length=4, step=1)
+                    @test (1:4) .- half(Odd(3)) === range(half(Odd(-1)), length=4, step=1)
                 end
 
                 @testset "Odd{BigInt}" begin

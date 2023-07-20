@@ -180,6 +180,20 @@ Base.zero(::Type{HalfOddInteger{T}}) where {T<:Integer} = zero(Half{T})
 Base.iszero(::HalfOddInteger) = false
 Base.isone(::HalfOddInteger) = false
 
+# We can't have a HalfOddInt 1, as we can't have an Odd 2. We therefore need to work around this
+# Ideally, such a range should not be created
+Base.step(r::AbstractUnitRange{HalfOddInteger{T}}) where {T<:Integer} = oneunit(T)
+
+if VERSION < v"1.9"
+	# work around broadcasting creating UnitRanges on older Julia versions (e.g. v1.6)
+	Base.broadcasted(::Broadcast.DefaultArrayStyle{1}, ::typeof(+), r::AbstractUnitRange{<:Integer}, x::HalfOddInteger) =
+		range(first(r)+x, step=step(r), length=length(r))
+	Base.broadcasted(::Broadcast.DefaultArrayStyle{1}, ::typeof(-), r::AbstractUnitRange{<:Integer}, x::HalfOddInteger) =
+		range(first(r)-x, step=step(r), length=length(r))
+	Base.broadcasted(::Broadcast.DefaultArrayStyle{1}, ::typeof(+), x::HalfOddInteger, r::AbstractUnitRange{<:Integer}) =
+		range(x+first(r), step=step(r), length=length(r))
+end
+
 function _unitsteprange_ofeltype(start, stop, ::Type{T}) where {T}
 	startT, stopT = convert.(T, promote(start, stop))
 	StepRange(startT, Integer(oneunit(stopT-startT)), stopT)
