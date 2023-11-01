@@ -4,7 +4,8 @@ using Test
 
 using Aqua
 @testset "project quality" begin
-    Aqua.test_all(OddEvenIntegers)
+    Aqua.test_all(OddEvenIntegers,
+        project_toml_formatting = VERSION >= v"1.9")
 end
 
 using Documenter
