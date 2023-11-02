@@ -12,7 +12,6 @@ const HalfOddEvenInteger = Half{<:AbstractOddEvenInteger}
 const HalfOddInteger{T<:Integer} = Half{Odd{T}}
 const HalfEvenInteger{T<:Integer} = Half{Even{T}}
 
-HalfOddInteger(x::HalfOddInteger) = x
 HalfOddInteger(h::Half{T}) where {T<:Integer} = half(Odd(twice(h)))
 
 for f in (:+, :-)
