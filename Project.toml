@@ -1,10 +1,16 @@
 name = "OddEvenIntegers"
 uuid = "8d37c425-f37a-4ca2-9b9d-a61bc06559d2"
 authors = ["Jishnu Bhattacharya <jishnub.github@gmail.com> and contributors"]
-version = "0.1.10"
+version = "0.1.11"
 
 [deps]
 HalfIntegers = "f0d1745a-41c9-11e9-1dd9-e5d34d218721"
+
+[weakdeps]
+HalfIntegers = "f0d1745a-41c9-11e9-1dd9-e5d34d218721"
+
+[extensions]
+OddEvenIntegersHalfIntegersExt = "HalfIntegers"
 
 [compat]
 Documenter = "0.27"
@@ -14,7 +20,8 @@ julia = "1.6"
 [extras]
 Aqua = "4c88cf16-eb10-579e-8560-4a9242c79595"
 Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
+HalfIntegers = "f0d1745a-41c9-11e9-1dd9-e5d34d218721"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [targets]
-test = ["Aqua", "Documenter", "Test"]
+test = ["Aqua", "Documenter", "Test", "HalfIntegers"]

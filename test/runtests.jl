@@ -4,7 +4,8 @@ using Test
 
 using Aqua
 @testset "project quality" begin
-    Aqua.test_all(OddEvenIntegers)
+    Aqua.test_all(OddEvenIntegers,
+        project_toml_formatting = VERSION >= v"1.9")
 end
 
 using Documenter
@@ -165,6 +166,10 @@ end
     end
     @testset "half integers" begin
         @testset "Odd" begin
+            HalfOddInteger{T<:Integer} = Half{Odd{T}}
+            HalfOddInteger(x::HalfOddInteger) = x
+            HalfOddInteger(h::Half{T}) where {T<:Integer} = half(Odd(twice(h)))
+
             x = half(Odd(3))
             @test x isa Half{Odd{Int}}
             @test x == x
@@ -194,8 +199,8 @@ end
             @test x - y == -1
             @test x != 1
             @test 1 != x
-            @test OddEvenIntegers.HalfOddInteger(x) === x
-            @test OddEvenIntegers.HalfOddInteger(half(3)) === x
+            @test HalfOddInteger(x) === x
+            @test HalfOddInteger(half(3)) === x
 
             @test half(Odd(typemax(Int))) + half(Odd(typemax(Int))) == typemax(Int)
 
