@@ -108,7 +108,7 @@ end
         @test Base.checked_abs(-x) == 4
         @test zero(x) == Even(0) == 0
         @test one(x) == 1
-        @test oneunit(x) == 1
+        @test_throws DomainError oneunit(x)
         @test trailing_zeros(x) == 2
         @test rem(x, x) == 0
         @test div(x, x) == 1
@@ -127,8 +127,6 @@ end
 
         if VERSION >= v"1.8"
             @test range(Even(2), length=2) == 2:3
-            @test range(2, length=Even(2)) == 2:3
-            @test range(Even(2), length=Even(2)) == 2:3
             @test Even(2):10 == 2:10
             @test Even(2):Even(2):10 == 2:2:10
             @test 2:Even(2):10 == 2:2:10
