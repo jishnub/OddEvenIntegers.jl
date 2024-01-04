@@ -122,8 +122,6 @@ Base.zero(::Type{Odd{T}}) where {T<:Integer} = zero(T)
 
 Base.one(x::Even) = one(x.x)
 Base.one(::Type{Even{T}}) where {T} = one(T)
-# hack around the fact that we can't have an even 1
-Base.oneunit(x::Even) = oneunit(x.x)
 
 Base.show(io::IO, @nospecialize(x::AbstractOddEvenInteger)) = print(io, x.x)
 
