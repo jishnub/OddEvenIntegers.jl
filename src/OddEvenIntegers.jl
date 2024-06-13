@@ -75,8 +75,8 @@ Even(x::Even) = x
 
 Even{T}(x::Even) where {T<:Integer} = Even(T(x.x))
 
-Base.promote_type(::Type{Odd{A}}, ::Type{Odd{B}}) where {A,B} = promote_type(A,B)
-Base.promote_type(::Type{Even{A}}, ::Type{Even{B}}) where {A,B} = promote_type(A,B)
+Base.promote_rule(::Type{Odd{A}}, ::Type{Odd{B}}) where {A,B} = promote_type(A, B)
+Base.promote_rule(::Type{Even{A}}, ::Type{Even{B}}) where {A,B} = promote_type(A, B)
 Base.promote_rule(::Type{Odd{A}}, ::Type{T}) where {A,T<:Real} = promote_type(A, T)
 Base.promote_rule(::Type{Even{A}}, ::Type{T}) where {A,T<:Real} = promote_type(A, T)
 
