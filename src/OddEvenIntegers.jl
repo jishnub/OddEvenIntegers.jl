@@ -8,7 +8,7 @@ export Odd, Even
 Abstract superptye of odd and even integer types.
 
 # Examples
-```jldoctest
+```jldoctest; setup=:(using OddEvenIntegers)
 julia> Odd <: OddEvenIntegers.AbstractOddEvenInteger
 true
 
@@ -26,7 +26,7 @@ Base.:(==)(a::AbstractOddEvenInteger, b::AbstractOddEvenInteger) = a.x == b.x
 Represent an odd integer.
 
 # Examples
-```jldoctest
+```jldoctest; setup=:(using OddEvenIntegers)
 julia> Odd(3)
 3
 
@@ -54,7 +54,7 @@ Odd{T}(x::Odd) where {T<:Integer} = Odd(T(x.x))
 Represent an even integer.
 
 # Examples
-```jldoctest
+```jldoctest; setup=:(using OddEvenIntegers)
 julia> Even(4)
 4
 
