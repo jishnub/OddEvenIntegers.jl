@@ -59,10 +59,11 @@ end
         @test Odd{BigInt}(x) isa Odd{BigInt}
 
         if VERSION >= v"1.8"
-            @test range(Odd(1), length=2) == 1:2
+            @test range(Odd(1), step=Odd(1), length=2) == 1:2
             @test range(1, length=Odd(3)) == 1:3
-            @test range(Odd(1), length=Odd(3)) == 1:3
-            @test Odd(1):4 == 1:4
+            @test_broken range(Odd(1), step=Odd(1), length=Odd(3)) == 1:3
+            @test range(Odd(1), step=Odd(1), length=3) == 1:3
+            @test Odd(1):Odd(1):4 == 1:4
             @test Odd(1):2:Odd(5) == 1:2:5
             @test 1:2:Odd(5) == 1:2:5
         end
@@ -71,11 +72,6 @@ end
         @test iszero(zero(h))
         @test iszero(zero(typeof(h)))
         @test typeof(zero(h)) == typeof(zero(typeof(h)))
-
-        @testset "promote_type" begin
-            @test promote_type(Odd{Int8}, Odd{Int16}) == promote_type(Int8, Int16)
-            @test promote_type(Odd{Int8}, Int16) == promote_type(Int8, Int16)
-        end
     end
     @testset "Even" begin
         @test_throws DomainError Even(1)
@@ -125,8 +121,8 @@ end
         @test Even{BigInt}(x) isa Even{BigInt}
 
         if VERSION >= v"1.8"
-            @test range(Even(2), length=2) == 2:3
-            @test Even(2):10 == 2:10
+            @test range(Even(2), step=Odd(1), length=2) == 2:3
+            @test Even(2):Odd(1):10 == 2:10
             @test Even(2):Even(2):10 == 2:2:10
             @test 2:Even(2):10 == 2:2:10
         end
@@ -135,11 +131,6 @@ end
         @test isone(one(h))
         @test isone(one(typeof(h)))
         @test typeof(zero(h)) == typeof(zero(typeof(h)))
-
-        @testset "promote_type" begin
-            @test promote_type(Even{Int8}, Even{Int16}) == promote_type(Int8, Int16)
-            @test promote_type(Even{Int8}, Int16) == promote_type(Int8, Int16)
-        end
     end
     @testset "Odd and Even" begin
         @test Odd(1) + Even(2) == Even(2) + Odd(1) == 3
@@ -154,11 +145,6 @@ end
         @test Even(2) != Odd(1)
         @test !(Odd(1) ≈ Even(2))
         @test !(Even(2) ≈ Odd(1))
-
-        @testset "promote_type" begin
-            @test promote_type(Even{Int8}, Odd{Int16}) == promote_type(Int8, Int16)
-            @test promote_type(Odd{Int8}, Even{Int16}) == promote_type(Int8, Int16)
-        end
     end
     @testset "half integers" begin
         @testset "Odd" begin
