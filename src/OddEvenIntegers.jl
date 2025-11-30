@@ -75,11 +75,6 @@ Even(x::Even) = x
 
 Even{T}(x::Even) where {T<:Integer} = Even(T(x.x))
 
-Base.promote_type(::Type{Odd{A}}, ::Type{Odd{B}}) where {A,B} = promote_type(A,B)
-Base.promote_type(::Type{Even{A}}, ::Type{Even{B}}) where {A,B} = promote_type(A,B)
-Base.promote_rule(::Type{Odd{A}}, ::Type{T}) where {A,T<:Real} = promote_type(A, T)
-Base.promote_rule(::Type{Even{A}}, ::Type{T}) where {A,T<:Real} = promote_type(A, T)
-
 for f in [:AbstractFloat, :Float16, :Float32, :Float64, :BigFloat,
 		:Int8, :Int16, :Int32, :Int64, :Int128, :BigInt]
 	@eval Base.$f(x::AbstractOddEvenInteger) = $f(x.x)
@@ -95,10 +90,18 @@ for f in (:(>>), :(<<))
 	@eval Base.$f(x::AbstractOddEvenInteger, y::UInt) = $f(x.x, y)
 end
 
+for f in (:+, :-)
+	@eval Base.$f(x::Odd, y::Odd) = Even($f(x.x, y.x))
+	@eval Base.$f(x::Even, y::Even) = Even($f(x.x, y.x))
+	@eval Base.$f(x::Even, y::Odd) = Odd($f(x.x, y.x))
+	@eval Base.$f(x::Odd, y::Even) = Odd($f(x.x, y.x))
+end
+
 for f in (:*,)
 	@eval Base.$f(x::Odd, y::Odd) = Odd($f(x.x, y.x))
-	@eval Base.$f(x::AbstractOddEvenInteger, y::AbstractOddEvenInteger) = Even($f(x.x, y.x))
+	@eval Base.$f(x::Union{Odd,Even}, y::Union{Odd,Even}) = Even($f(x.x, y.x))
 end
+
 for f in (:-, :checked_abs)
 	@eval Base.$f(x::Odd) = Odd(Base.$f(x.x))
 	@eval Base.$f(x::Even) = Even(Base.$f(x.x))
@@ -125,8 +128,7 @@ Base.one(::Type{Even{T}}) where {T} = one(T)
 
 Base.show(io::IO, @nospecialize(x::AbstractOddEvenInteger)) = print(io, x.x)
 
-if !isdefined(Base, :get_extension)
-	include("../ext/OddEvenIntegersHalfIntegersExt.jl")
-end
+Base.promote_rule(::Type{Odd{T}}, ::Type{S}) where {T<:Integer, S<:Number} = promote_type(T, S)
+Base.promote_rule(::Type{Even{T}}, ::Type{S}) where {T<:Integer, S<:Number} = promote_type(T, S)
 
 end
