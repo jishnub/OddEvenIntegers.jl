@@ -38,13 +38,13 @@ jobs:
   test:
     needs: pre_job
     if: needs.pre_job.outputs.should_skip != 'true'
-    name: Julia ${{ matrix.version }} - ${{ matrix.os }} - ${{ github.event_name }}
+    name: Julia ${{ matrix.julia-version }} - ${{ matrix.os }} - ${{ github.event_name }}
     runs-on: ${{ matrix.os }}
-    continue-on-error: ${{ matrix.version == 'nightly' }}
+    continue-on-error: ${{ matrix.julia-version == 'nightly' }}
     strategy:
       fail-fast: false
       matrix:
-        version:
+        julia-version:
           - 'min'
           - 'lts'
           - '1'
@@ -52,11 +52,17 @@ jobs:
           - ubuntu-latest
           - macOS-latest
           - windows-latest
+        exclude:
+          - github-runner: macOS-latest # Apple Silicon
+            julia-version: 'min'
+        include:
+          - github-runner: macOS-13 # Intel
+            julia-version: 'min'
     steps:
       - uses: actions/checkout@v6
       - uses: julia-actions/setup-julia@v2.6
         with:
-          version: ${{ matrix.version }}
+          version: ${{ matrix.julia-version }}
       - uses: julia-actions/cache@v2
       - uses: julia-actions/julia-buildpkg@v1
       - uses: julia-actions/julia-runtest@v1
