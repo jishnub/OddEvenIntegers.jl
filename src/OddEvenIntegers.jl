@@ -5,7 +5,7 @@ export Odd, Even
 """
 	AbstractOddEvenInteger  <: Integer
 
-Abstract superptye of odd and even integer types.
+Abstract supertype of odd and even integer types.
 
 # Examples
 ```jldoctest; setup=:(using OddEvenIntegers)
