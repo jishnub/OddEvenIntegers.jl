@@ -28,7 +28,7 @@ Represent an odd integer.
 # Examples
 ```jldoctest; setup=:(using OddEvenIntegers)
 julia> Odd(3)
-3
+Odd(3)
 
 julia> isodd(Odd(3))
 true
@@ -56,7 +56,7 @@ Represent an even integer.
 # Examples
 ```jldoctest; setup=:(using OddEvenIntegers)
 julia> Even(4)
-4
+Even(4)
 
 julia> iseven(Even(4))
 true
@@ -126,7 +126,17 @@ Base.zero(::Type{Odd{T}}) where {T<:Integer} = zero(T)
 Base.one(x::Even) = one(x.x)
 Base.one(::Type{Even{T}}) where {T} = one(T)
 
-Base.show(io::IO, @nospecialize(x::AbstractOddEvenInteger)) = print(io, x.x)
+function Base.show(io::IO, x::Odd)
+	print(io, "Odd(")
+	show(io, x.x)
+	print(io, ")")
+end
+
+function Base.show(io::IO, x::Even)
+	print(io, "Even(")
+	show(io, x.x)
+	print(io, ")")
+end
 
 Base.promote_rule(::Type{Odd{T}}, ::Type{S}) where {T<:Integer, S<:Number} = promote_type(T, S)
 Base.promote_rule(::Type{Even{T}}, ::Type{S}) where {T<:Integer, S<:Number} = promote_type(T, S)
